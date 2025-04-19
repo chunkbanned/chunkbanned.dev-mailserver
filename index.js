@@ -1,10 +1,10 @@
 const { SMTPServer } = require("smtp-server");
 const { simpleParser } = require("mailparser");
 const axios = require("axios");
+require("dotenv").config();
 
 // 🔗 Your Discord webhook
-const DISCORD_WEBHOOK_URL =
-	"https://discord.com/api/webhooks/1362892716228477122/ZTsNkzHaJuDxVJzFDM-JXuYHy0nQIm6gppA7FJE_7YeuIlweAKF2Yj3fsbL_oJ75AcKt";
+const DISCORD_WEBHOOK_URL = process.env.DISCORD_WEBHOOK;
 
 const server = new SMTPServer({
 	authOptional: true,
@@ -15,8 +15,7 @@ const server = new SMTPServer({
 				console.log(`Email from: ${from.text}`);
 
 				// Extract the recipient email from the session
-				const recipientEmail =
-					session.envelope.rcptTo[0].address || "hgshdffgd@chunkbanned.dev";
+				const recipientEmail = session.envelope.rcptTo[0].address;
 
 				// Try to extract verification URL or login code
 				let messageContent = "";
@@ -61,8 +60,8 @@ const server = new SMTPServer({
 	logger: false,
 });
 
-server.listen(2544, () => {
-	console.log("Mail server running on port 2544");
+server.listen(process.env.PORT, () => {
+	console.log(`Mail server running on port ${process.env.PORT}`);
 	axios
 		.post(DISCORD_WEBHOOK_URL, {
 			content: "⚠️ **Mail Server Online**\nThe mail server is now online.",
